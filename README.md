@@ -1,12 +1,13 @@
 # Zotero Literature Radar
 
-Zotero Literature Radar is a Codex skill for turning Zotero RSS/feed subscriptions into configurable literature screening reports. It reads recent Zotero feed items, scores them against user-defined research topics, writes a Markdown report, and can optionally dry-run and import selected papers into Zotero collections.
+Zotero Literature Radar is a Codex skill for collecting and screening the latest papers and frontier research related to a user-defined research theme. It reads recent Zotero RSS/feed items, scores them against configurable topics, writes a Markdown report, and can optionally dry-run and import selected papers into Zotero collections.
 
-The current version does not require Zotero MCP. It uses local Zotero SQLite for read-only feed/report generation and Zotero Web API for confirmed write/import workflows.
+Use it as a recurring research radar: keep journal feeds in Zotero, describe your research interests in a workspace theme file, and let Codex generate a focused report of papers worth reading next.
 
 ## Features
 
 - Generate Markdown literature radar reports from Zotero RSS/feed items.
+- Surface recent papers and frontier work related to a research theme.
 - Configure research themes with A/B/C topic tiers, precision gates, keywords, ignore patterns, and display limits.
 - Prefer fresh Top 3 and A-tier recommendations using a local recommendation cache.
 - Show current Zotero import status from a verified import cache.
@@ -101,7 +102,7 @@ Example themes are in `examples/`.
 In Codex, ask:
 
 ```text
-Use $zotero-literature-radar to generate a weekly Zotero subscription paper report.
+Use $zotero-literature-radar to generate a weekly report of recent papers related to my research theme.
 ```
 
 The default report path is:
@@ -196,18 +197,10 @@ If you sync your Obsidian vault to GitHub, ignore generated reports, runtime cac
 A compact weekly automation prompt can be:
 
 ```text
-Use $zotero-literature-radar to generate a weekly Zotero subscription paper report. After finishing, briefly report the generated Markdown path, raw item count, selected item count, A/B/C total counts, A/B/C displayed counts, and this week's three most worth-reading paper titles.
+Use $zotero-literature-radar to generate a weekly report of recent papers related to my research theme. After finishing, briefly report the generated Markdown path, raw item count, selected item count, A/B/C total counts, A/B/C displayed counts, and this week's three most worth-reading paper titles.
 ```
 
 Keep Zotero imports as a separate confirmed workflow unless you intentionally want a dry-run after report generation.
-
-## What This Skill Does Not Require
-
-- It does not require Zotero MCP.
-- It does not require pyzotero.
-- It does not require a local web server.
-- It does not download PDFs by default.
-- It does not write to Zotero during report generation.
 
 ## Safety Notes
 
@@ -216,4 +209,4 @@ Keep Zotero imports as a separate confirmed workflow unless you intentionally wa
 - Dry-run comes before every Zotero write/import.
 - Deleted/trash matches are treated as conflicts and require user confirmation.
 - The import cache records history, but report generation verifies current Zotero state before display.
-
+- Report generation does not download PDFs and does not write to Zotero.
