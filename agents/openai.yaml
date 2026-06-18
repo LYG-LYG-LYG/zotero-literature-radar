@@ -1,0 +1,4 @@
+interface:
+  display_name: "Zotero Literature Radar"
+  short_description: "Generate topic-configurable Zotero literature radar reports."
+  default_prompt: "Use $zotero-literature-radar to generate a weekly paper screening report from Zotero feeds."
