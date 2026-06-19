@@ -1,52 +1,52 @@
 # Zotero Literature Radar
 
-Zotero Literature Radar is a Codex skill for collecting and screening the latest papers and frontier research related to a user-defined research theme. It reads recent Zotero RSS/feed items, scores them against configurable topics, writes a Markdown report, and can optionally dry-run and import selected papers into Zotero collections.
+Zotero Literature Radar 是一个 Codex skill，用于围绕用户自定义的研究主题，持续收集和筛选 Zotero RSS/feed 中的最新论文与前沿研究。它会读取最近进入 Zotero 订阅源的条目，根据可配置的主题策略打分分档，生成 Markdown 文献雷达周报，并可在用户确认后把精选论文导入 Zotero collection。
 
-Use it as a recurring research radar: keep journal feeds in Zotero, describe your research interests in a workspace theme file, and let Codex generate a focused report of papers worth reading next.
+它适合作为固定运行的科研信息雷达：在 Zotero 中维护期刊 RSS 订阅，在工作区主题文件中描述你的研究兴趣，然后让 Codex 定期生成“下一批最值得读什么”的聚焦报告。
 
-## Features
+## 功能
 
-- Generate Markdown literature radar reports from Zotero RSS/feed items.
-- Surface recent papers and frontier work related to a research theme.
-- Configure research themes with A/B/C topic tiers, precision gates, keywords, ignore patterns, and display limits.
-- Prefer fresh Top 3 and A-tier recommendations using a local recommendation cache.
-- Show current Zotero import status from a verified import cache.
-- Polish report prose through Codex after the script produces a structured draft.
-- Dry-run Zotero imports before writing.
-- Import Top 3, A-tier, or Top3+A papers into a Zotero collection after confirmation.
-- Store Chinese title translations in Zotero `Extra` as `titleTranslation: ...`.
-- Keep runtime state inside the report output directory instead of the skill directory.
+- 从 Zotero RSS/feed 条目生成 Markdown 文献雷达报告。
+- 按研究主题筛选最新论文和相关前沿研究。
+- 支持 A/B/C 分档、精度门控、关键词、忽略规则和展示数量配置。
+- 用本地推荐缓存优先展示新的 Top 3 和 A 档论文，减少重复推荐。
+- 根据导入缓存和只读复核结果展示论文当前 Zotero 导入状态。
+- 脚本先生成结构化草稿，再由 Codex 对报告进行中文润色。
+- 所有 Zotero 写入流程都先 dry-run，再由用户确认执行。
+- 支持将 Top3、A 档或 Top3+A 档论文导入指定 Zotero collection。
+- 中文题名写入 Zotero `Extra` 字段中的 `titleTranslation: ...`。
+- 运行时缓存保存在报告输出目录中，不写入 skill 目录。
 
-## Requirements
+## 运行要求
 
-- Codex desktop or another Codex environment that supports local skills.
-- Zotero desktop with RSS/feed subscriptions already configured.
-- Python 3.10 or newer. Python 3.11+ is recommended.
-- No required third-party Python packages; scripts use the Python standard library.
-- For report generation: readable local Zotero `zotero.sqlite`.
-- For Zotero imports/writes: Zotero Web API credentials in environment variables.
+- Codex 桌面端，或其他支持本地 skills 的 Codex 环境。
+- Zotero 桌面端，并已配置 RSS/feed 订阅。
+- Python 3.10 或更新版本，推荐 Python 3.11+。
+- 当前脚本只使用 Python 标准库，不需要安装第三方 Python 包。
+- 生成周报需要本地 Zotero `zotero.sqlite` 可读。
+- 导入或更新 Zotero 条目时，需要 Zotero Web API 环境变量。
 
-Report generation does not require a Zotero Web API key.
+仅生成周报不需要 Zotero Web API key。
 
-## Install
+## 安装
 
-Copy this folder into your Codex skills directory:
+将本仓库复制到 Codex skills 目录：
 
 ```text
 ~/.codex/skills/zotero-literature-radar
 ```
 
-On Windows, this is usually:
+Windows 上通常是：
 
 ```text
 %USERPROFILE%\.codex\skills\zotero-literature-radar
 ```
 
-The skill directory must contain `SKILL.md` at its root.
+确保 `SKILL.md` 位于 skill 目录根部。
 
-## Configure Zotero Reads
+## 配置 Zotero 读取
 
-The report generator looks for Zotero SQLite in common locations:
+报告生成脚本会自动查找常见的 Zotero SQLite 路径：
 
 ```text
 %USERPROFILE%\Zotero\zotero.sqlite
@@ -54,17 +54,17 @@ The report generator looks for Zotero SQLite in common locations:
 %APPDATA%\Zotero\zotero.sqlite
 ```
 
-You can override this with:
+也可以通过环境变量指定：
 
 ```text
 ZOTERO_DB_PATH=/path/to/zotero.sqlite
 ```
 
-or by setting `zotero_sqlite` in the workspace theme file.
+或者在工作区主题文件中设置 `zotero_sqlite`。
 
-## Configure Zotero Writes
+## 配置 Zotero 写入
 
-Only import/write workflows require Zotero Web API credentials:
+只有导入、恢复、更新 Zotero 条目时才需要 Zotero Web API 凭据：
 
 ```text
 ZOTERO_API_KEY=your_zotero_api_key
@@ -72,88 +72,88 @@ ZOTERO_LIBRARY_ID=your_library_id
 ZOTERO_LIBRARY_TYPE=user
 ```
 
-Use `ZOTERO_LIBRARY_TYPE=group` for group libraries.
+如果使用 group library，将 `ZOTERO_LIBRARY_TYPE` 设置为 `group`。
 
-Do not store API keys in Obsidian notes, Git repositories, or skill files.
+不要把 API key 写入 Obsidian 笔记、Git 仓库或 skill 文件。
 
-## Workspace Theme
+## 工作区主题配置
 
-Each workspace should have its own theme file:
+每个工作区可以有自己的主题文件：
 
 ```text
 .codex/zotero-literature-radar/research-theme.md
 ```
 
-If the file is missing, the skill initializes it from `templates/research-theme.md`.
+如果该文件不存在，skill 会从 `templates/research-theme.md` 初始化一份。
 
-The theme contains one JSON block. Important fields:
+主题文件中包含一个 JSON 配置块，常用字段包括：
 
-- `lookback_days`: feed window in days.
-- `output_dir`: report folder, relative to the workspace unless absolute.
-- `max_items_per_tier`: displayed A/B/C paper limits.
-- `ignore_title_patterns`: regex patterns for non-paper feed entries.
-- `ignore_topic_patterns`: regex patterns for irrelevant topics.
-- `topics`: scoring topics with `tier`, `weight`, `required_any`, and `keywords`.
+- `lookback_days`：RSS/feed 检索窗口，单位为天。
+- `output_dir`：报告输出目录；相对路径会解析到当前工作区下。
+- `max_items_per_tier`：A/B/C 各档展示数量上限。
+- `ignore_title_patterns`：用于忽略非论文条目的标题正则。
+- `ignore_topic_patterns`：用于排除无关主题的正则。
+- `topics`：主题评分规则，包含 `tier`、`weight`、`required_any` 和 `keywords`。
 
-Example themes are in `examples/`.
+示例主题见 `examples/` 目录。
 
-## Generate A Report
+## 生成周报
 
-In Codex, ask:
+在 Codex 中输入：
 
 ```text
-Use $zotero-literature-radar to generate a weekly report of recent papers related to my research theme.
+使用 $zotero-literature-radar 生成与我的研究主题相关的最新论文周报。
 ```
 
-The default report path is:
+默认报告路径：
 
 ```text
 <output_dir>/Zotero论文订阅周报-YYYY-MM-DD.md
 ```
 
-If a same-day report already exists, the script writes:
+如果当天已经生成过报告，会自动编号，避免覆盖：
 
 ```text
 Zotero论文订阅周报-YYYY-MM-DD-02.md
 Zotero论文订阅周报-YYYY-MM-DD-03.md
 ```
 
-Runtime state is stored under:
+运行时状态保存在：
 
 ```text
 <output_dir>/.zotero-literature-radar/
 ```
 
-This runtime directory is not intended for manual note-taking.
+该目录用于缓存推荐和导入状态，不建议作为普通笔记目录维护。
 
-## Import Papers Into Zotero
+## 导入论文到 Zotero
 
-Imports are intentionally two-step.
+导入流程分两步：先 dry-run，确认后再写入 Zotero。
 
-First ask Codex for a dry-run, for example:
+示例请求：
 
 ```text
-Use $zotero-literature-radar to dry-run import the Top3 papers from this report into Codex_Filter_Database/99_To_Read.
+使用 $zotero-literature-radar 将这份报告中的 Top3 论文 dry-run 导入 Codex_Filter_Database/99_To_Read。
 ```
 
-Review the dry-run plan. Only after confirmation should Codex execute the plan and write to Zotero.
+检查 dry-run 清单后，再让 Codex 执行写入。
 
-The import workflow can:
+导入流程可以：
 
-- Resolve the target collection.
-- Detect active existing items.
-- Detect deleted/trash conflicts.
-- Create new journalArticle items.
-- Restore deleted/trash items when explicitly confirmed.
-- Add tags and collection membership.
-- Write Chinese title translations only to `Extra` as `titleTranslation: ...`.
-- Update `imported-items.json` only after read-back verification succeeds.
+- 解析目标 collection。
+- 检测已存在的活动条目。
+- 检测 deleted/trash 冲突。
+- 创建新的 `journalArticle` 条目。
+- 在用户确认后恢复 deleted/trash 条目。
+- 添加标签和 collection 归属。
+- 只把中文题名写入 `Extra` 的 `titleTranslation: ...`。
+- 写入后读回验证，成功后再更新 `imported-items.json`。
 
-## Obsidian Workflow
+## 与 Obsidian 联合使用
 
-This skill works well when your Codex workspace is an Obsidian vault.
+建议将 Codex 工作区设置为 Obsidian vault 根目录。
 
-Recommended vault layout:
+推荐目录结构：
 
 ```text
 your-vault/
@@ -162,22 +162,22 @@ your-vault/
   Reading Notes/
 ```
 
-For Chinese vaults, these names are also natural:
+中文 vault 中也可以使用：
 
 ```text
 论文追踪周报/
 论文阅读报告/
 ```
 
-Suggested workflow:
+推荐工作流：
 
-- Generate weekly reports into a dedicated report folder.
-- Read and search the reports directly in Obsidian.
-- Link each Top 3 paper to a separate reading note when you decide to read it deeply.
-- Keep screening reasons in Markdown reports, not in Zotero metadata.
-- Keep runtime cache files out of normal note workflows.
+- 将每周报告生成到专门的周报目录。
+- 直接在 Obsidian 中阅读、搜索和链接周报。
+- 对 Top3 或 A 档论文建立单独精读笔记。
+- 筛选理由保留在 Markdown 周报中，不写入 Zotero 条目元数据。
+- `.zotero-literature-radar/` 是运行时缓存目录，不建议当作笔记目录。
 
-Suggested frontmatter for manually curated report notes:
+可选的报告笔记 frontmatter：
 
 ```yaml
 ---
@@ -190,23 +190,23 @@ tags:
 ---
 ```
 
-If you sync your Obsidian vault to GitHub, ignore generated reports, runtime caches, import plans, API keys, and private notes unless you intentionally want to publish them.
+如果将 Obsidian vault 同步到 GitHub，请忽略生成周报、运行时缓存、导入计划、API key 和私人笔记，除非你确实想公开它们。
 
-## Automation Prompt
+## 自动化提示词
 
-A compact weekly automation prompt can be:
+每周自动化可以使用类似提示词：
 
 ```text
-Use $zotero-literature-radar to generate a weekly report of recent papers related to my research theme. After finishing, briefly report the generated Markdown path, raw item count, selected item count, A/B/C total counts, A/B/C displayed counts, and this week's three most worth-reading paper titles.
+使用 $zotero-literature-radar 生成与我的研究主题相关的最新论文周报。完成后简短汇报生成的 Markdown 路径、原始条目数、入选条目数、A/B/C 总数、A/B/C 展示数量，以及本周最值得精读的 3 篇论文标题。
 ```
 
-Keep Zotero imports as a separate confirmed workflow unless you intentionally want a dry-run after report generation.
+建议把 Zotero 导入作为单独确认流程，不要默认在周报自动化中直接写入 Zotero。
 
-## Safety Notes
+## 安全说明
 
-- Local Zotero SQLite is treated as read-only.
-- Zotero writes use Web API credentials from environment variables.
-- Dry-run comes before every Zotero write/import.
-- Deleted/trash matches are treated as conflicts and require user confirmation.
-- The import cache records history, but report generation verifies current Zotero state before display.
-- Report generation does not download PDFs and does not write to Zotero.
+- 本地 Zotero SQLite 只读使用。
+- Zotero 写入使用环境变量中的 Web API 凭据。
+- 每次 Zotero 写入前必须先生成 dry-run 清单。
+- deleted/trash 命中默认视为冲突，需要用户确认。
+- 导入缓存只记录历史状态；周报生成时会只读复核当前 Zotero 状态。
+- 生成周报不会下载 PDF，也不会写入 Zotero。
