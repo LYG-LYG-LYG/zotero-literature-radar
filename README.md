@@ -64,15 +64,99 @@ ZOTERO_DB_PATH=/path/to/zotero.sqlite
 
 ## 配置 Zotero 写入
 
-只有导入、恢复、更新 Zotero 条目时才需要 Zotero Web API 凭据：
+只有导入、恢复、更新 Zotero 条目时才需要 Zotero Web API 凭据。仅生成周报不需要配置这一部分。
 
-```text
-ZOTERO_API_KEY=your_zotero_api_key
-ZOTERO_LIBRARY_ID=your_library_id
-ZOTERO_LIBRARY_TYPE=user
+### 1. 创建 Zotero API Key
+
+1. 打开 Zotero API Keys 页面：
+   <https://www.zotero.org/settings/keys>
+2. 点击 `Create new private key`。
+3. 至少勾选：
+   - `Allow library access`
+   - 需要写入个人库时，给 `Default Group Permissions` 或个人库权限开启读写。
+   - 需要写入 group library 时，给目标 group 开启读写。
+4. 创建后复制生成的 key。关闭页面后通常无法再次看到完整 key。
+
+### 2. 确认 Library ID 和 Library Type
+
+个人库：
+
+- `ZOTERO_LIBRARY_TYPE=user`
+- `ZOTERO_LIBRARY_ID` 使用你的 Zotero user ID。
+- user ID 可以在 Zotero Web API key 页面、Zotero 网站个人资料或 API 文档提示中找到。
+
+群组库：
+
+- `ZOTERO_LIBRARY_TYPE=group`
+- `ZOTERO_LIBRARY_ID` 使用 group ID。
+- group ID 通常可以从群组页面 URL 中看到，例如 `https://www.zotero.org/groups/1234567/group-name` 中的 `1234567`。
+
+### 3. 在 Windows PowerShell 中配置
+
+仅当前 PowerShell 窗口有效：
+
+```powershell
+$env:ZOTERO_API_KEY = "your_zotero_api_key"
+$env:ZOTERO_LIBRARY_ID = "your_library_id"
+$env:ZOTERO_LIBRARY_TYPE = "user"
 ```
 
-如果使用 group library，将 `ZOTERO_LIBRARY_TYPE` 设置为 `group`。
+永久写入当前 Windows 用户环境变量：
+
+```powershell
+[Environment]::SetEnvironmentVariable("ZOTERO_API_KEY", "your_zotero_api_key", "User")
+[Environment]::SetEnvironmentVariable("ZOTERO_LIBRARY_ID", "your_library_id", "User")
+[Environment]::SetEnvironmentVariable("ZOTERO_LIBRARY_TYPE", "user", "User")
+```
+
+写入后请重启 Codex、PowerShell 或终端，让新环境变量生效。
+
+如果使用 group library：
+
+```powershell
+[Environment]::SetEnvironmentVariable("ZOTERO_LIBRARY_TYPE", "group", "User")
+```
+
+### 4. 在 Windows CMD 中配置
+
+永久写入当前 Windows 用户环境变量：
+
+```bat
+setx ZOTERO_API_KEY "your_zotero_api_key"
+setx ZOTERO_LIBRARY_ID "your_library_id"
+setx ZOTERO_LIBRARY_TYPE "user"
+```
+
+`setx` 写入后只对新打开的终端生效。
+
+### 5. 在 macOS/Linux 中配置
+
+临时配置：
+
+```bash
+export ZOTERO_API_KEY="your_zotero_api_key"
+export ZOTERO_LIBRARY_ID="your_library_id"
+export ZOTERO_LIBRARY_TYPE="user"
+```
+
+永久配置可以加入 `~/.zshrc`、`~/.bashrc` 或你的 shell 配置文件：
+
+```bash
+export ZOTERO_API_KEY="your_zotero_api_key"
+export ZOTERO_LIBRARY_ID="your_library_id"
+export ZOTERO_LIBRARY_TYPE="user"
+```
+
+### 6. 验证环境变量
+
+PowerShell：
+
+```powershell
+echo $env:ZOTERO_LIBRARY_ID
+echo $env:ZOTERO_LIBRARY_TYPE
+```
+
+不要在截图、公开 issue 或 README 中打印完整 `ZOTERO_API_KEY`。
 
 不要把 API key 写入 Obsidian 笔记、Git 仓库或 skill 文件。
 
