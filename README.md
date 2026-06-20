@@ -1,6 +1,6 @@
 # Zotero Literature Radar
 
-Zotero Literature Radar 是一个 Codex skill，用于围绕用户自定义的研究主题，持续收集和筛选 Zotero RSS/feed 中的最新论文与前沿研究。它会读取最近进入 Zotero 订阅源的条目，根据可配置的主题策略打分分档，生成 Markdown 文献雷达周报，并可在用户确认后把精选论文导入 Zotero collection。
+Zotero Literature Radar 是一个 Codex skill，用于围绕用户自定义的研究主题，持续收集和筛选 Zotero RSS/feed 中的最新论文与前沿研究，适合结合codex自动化任务使用。它会读取最近进入 Zotero 订阅源的条目，根据可配置的主题策略打分分档，生成 Markdown 文献雷达周报，并可在用户确认后把精选论文导入 Zotero collection。
 
 它适合作为固定运行的科研信息雷达：在 Zotero 中维护期刊 RSS 订阅，在工作区主题文件中描述你的研究兴趣，然后让 Codex 定期生成“下一批最值得读什么”的聚焦报告。
 
@@ -11,22 +11,17 @@ Zotero Literature Radar 是一个 Codex skill，用于围绕用户自定义的�
 - 支持 A/B/C 分档、精度门控、关键词、忽略规则和展示数量配置。
 - 用本地推荐缓存优先展示新的 Top 3 和 A 档论文，减少重复推荐。
 - 根据导入缓存和只读复核结果展示论文当前 Zotero 导入状态。
-- 脚本先生成结构化草稿，再由 Codex 对报告进行中文润色。
 - 所有 Zotero 写入流程都先 dry-run，再由用户确认执行。
 - 支持将 Top3、A 档或 Top3+A 档论文导入指定 Zotero collection。
-- 中文题名写入 Zotero `Extra` 字段中的 `titleTranslation: ...`。
-- 运行时缓存保存在报告输出目录中，不写入 skill 目录。
+- 运行时缓存保存在报告输出目录中。
 
 ## 运行要求
 
 - Codex 桌面端，或其他支持本地 skills 的 Codex 环境。
-- Zotero 桌面端，并已配置 RSS/feed 订阅。
+- Zotero 桌面端，并配置 RSS/feed 订阅。
 - Python 3.10 或更新版本，推荐 Python 3.11+。
-- 当前脚本只使用 Python 标准库，不需要安装第三方 Python 包。
-- 生成周报需要本地 Zotero `zotero.sqlite` 可读。
 - 导入或更新 Zotero 条目时，需要 Zotero Web API 环境变量。
-
-仅生成周报不需要 Zotero Web API key。
+-仅生成周报不需要 Zotero Web API key。
 
 ## 安装
 
@@ -93,15 +88,7 @@ ZOTERO_DB_PATH=/path/to/zotero.sqlite
 
 ### 3. 在 Windows PowerShell 中配置
 
-仅当前 PowerShell 窗口有效：
-
-```powershell
-$env:ZOTERO_API_KEY = "your_zotero_api_key"
-$env:ZOTERO_LIBRARY_ID = "your_library_id"
-$env:ZOTERO_LIBRARY_TYPE = "user"
-```
-
-永久写入当前 Windows 用户环境变量：
+写入当前 Windows 用户环境变量：
 
 ```powershell
 [Environment]::SetEnvironmentVariable("ZOTERO_API_KEY", "your_zotero_api_key", "User")
@@ -119,7 +106,7 @@ $env:ZOTERO_LIBRARY_TYPE = "user"
 
 ### 4. 在 Windows CMD 中配置
 
-永久写入当前 Windows 用户环境变量：
+写入当前 Windows 用户环境变量：
 
 ```bat
 setx ZOTERO_API_KEY "your_zotero_api_key"
