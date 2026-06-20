@@ -21,7 +21,7 @@ Zotero Literature Radar 是一个 Codex skill，用于围绕用户自定义的�
 - Zotero 桌面端，并配置 RSS/feed 订阅。
 - Python 3.10 或更新版本，推荐 Python 3.11+。
 - 导入或更新 Zotero 条目时，需要 Zotero Web API 环境变量。
--仅生成周报不需要 Zotero Web API key。
+- 仅生成周报不需要 Zotero Web API key。
 
 ## 安装
 
